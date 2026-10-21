@@ -1,0 +1,5 @@
+Contact me: roman@gmail.com  or   admin@site.ua
+This line has no emails at all.
+
+@ alone,  a@b  and   first.last@company.com.ua
+user@host

@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "tree": {
+      "commandName": "Project",
+      "commandLineArgs": "tree 4"
+    },
+    "kill --dry-run": {
+      "commandName": "Project",
+      "commandLineArgs": "kill 4 --dry-run"
+    },
+    "help": {
+      "commandName": "Project",
+      "commandLineArgs": "help"
+    }
+  }
+}

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MaskWords", "MaskWords\MaskWords.csproj", "{167240B7-6CDF-4734-A0AE-EE14CB0C44AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProcTree", "ProcTree\ProcTree.csproj", "{B26B6224-0F3A-46C7-A131-E16746989EF9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{167240B7-6CDF-4734-A0AE-EE14CB0C44AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167240B7-6CDF-4734-A0AE-EE14CB0C44AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167240B7-6CDF-4734-A0AE-EE14CB0C44AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167240B7-6CDF-4734-A0AE-EE14CB0C44AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B26B6224-0F3A-46C7-A131-E16746989EF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B26B6224-0F3A-46C7-A131-E16746989EF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B26B6224-0F3A-46C7-A131-E16746989EF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B26B6224-0F3A-46C7-A131-E16746989EF9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

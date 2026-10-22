@@ -2,17 +2,6 @@ using System.Text;
 
 namespace ProcTree;
 
-/// <summary>
-/// Лабораторна робота №2, завдання 2, варіант 4.
-/// Відображає дерево процесів, починаючи з заданого PID, або зупиняє все дерево:
-/// спочатку найнижчий рівень, батьківський процес - останній.
-/// Список процесів і зупинка виконуються запуском інших програм (wmic/powershell, taskkill).
-///
-/// Команди:
-///   ProcTree tree &lt;pid&gt;
-///   ProcTree kill &lt;pid&gt; [--dry-run] [--yes]
-///   ProcTree help
-/// </summary>
 public static class Program
 {
     private const int ExitOk = 0;
@@ -20,14 +9,13 @@ public static class Program
     private const int ExitNotFound = 3;
     private const int ExitKillFailed = 4;
 
-    // Процеси, які не можна зупиняти: System Idle Process (0) та System (4) у Windows, init (1) у Linux
     private static readonly HashSet<int> ProtectedPids = new() { 0, 1, 4 };
 
     public static int Main(string[] args)
     {
         try
         {
-            Console.OutputEncoding = Encoding.UTF8;   // для символів дерева ├── └──
+            Console.OutputEncoding = Encoding.UTF8;
         }
         catch (IOException)
         {
@@ -152,7 +140,6 @@ public static class Program
             }
             else if (ProcessSource.IsAlreadyExited(result))
             {
-                // Батьківський процес міг завершитися сам, коли зникли його дочірні процеси
                 Console.WriteLine($"exited   [level {depth}] {process.Pid} {process.Name} (already finished)");
             }
             else

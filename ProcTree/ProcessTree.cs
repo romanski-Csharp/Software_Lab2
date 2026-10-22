@@ -1,8 +1,5 @@
 namespace ProcTree;
 
-/// <summary>
-/// Дерево процесів, побудоване зі списку процесів за ідентифікатором батька (PPID).
-/// </summary>
 public sealed class ProcessTree
 {
     private readonly Dictionary<int, ProcessInfo> _byPid = new();
@@ -16,7 +13,6 @@ public sealed class ProcessTree
         }
         foreach (ProcessInfo process in _byPid.Values)
         {
-            // Процес не може бути батьком самого себе (у Windows так виглядає процес з PID 0)
             if (process.ParentPid == process.Pid)
             {
                 continue;
@@ -36,11 +32,6 @@ public sealed class ProcessTree
 
     public ProcessInfo? Find(int pid) => _byPid.GetValueOrDefault(pid);
 
-    /// <summary>
-    /// Повертає процеси піддерева разом з глибиною (корінь має глибину 0).
-    /// Обхід у ширину. Множина visited захищає від циклів: у Windows номери PID
-    /// використовуються повторно, і "батьком" може виявитися чужий процес.
-    /// </summary>
     public List<(ProcessInfo Process, int Depth)> GetSubtree(int rootPid)
     {
         var result = new List<(ProcessInfo, int)>();
@@ -69,9 +60,6 @@ public sealed class ProcessTree
         return result;
     }
 
-    /// <summary>
-    /// Порядок зупинки: спочатку найглибший рівень, батьківський (кореневий) процес - останній.
-    /// </summary>
     public List<(ProcessInfo Process, int Depth)> GetKillOrder(int rootPid)
     {
         return GetSubtree(rootPid)
@@ -80,13 +68,6 @@ public sealed class ProcessTree
             .ToList();
     }
 
-    /// <summary>
-    /// Виводить дерево у вигляді:
-    ///   1234 cmd.exe
-    ///   ├── 2001 PING.EXE
-    ///   └── 2002 cmd.exe
-    ///       └── 3001 PING.EXE
-    /// </summary>
     public void Print(int rootPid, TextWriter output)
     {
         ProcessInfo? root = Find(rootPid);

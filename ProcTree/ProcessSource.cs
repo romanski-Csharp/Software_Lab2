@@ -3,17 +3,8 @@ using System.Text.RegularExpressions;
 
 namespace ProcTree;
 
-/// <summary>
-/// Отримує список процесів і зупиняє процеси, запускаючи системні програми
-/// (а не через вбудовані можливості .NET), як вимагає завдання.
-///   Windows: wmic (або PowerShell, якщо wmic видалено з системи) і taskkill
-///   Linux/macOS: ps і kill
-/// </summary>
 public static class ProcessSource
 {
-    /// <summary>
-    /// Яка програма дала список процесів під час останнього виклику GetAll (для команди list).
-    /// </summary>
     public static string LastSource { get; private set; } = "";
 
     public static List<ProcessInfo> GetAll()
@@ -32,7 +23,6 @@ public static class ProcessSource
         }
         catch (Exception e) when (e is Win32Exception or InvalidOperationException)
         {
-            // wmic відсутній (видалений у Windows 11 24H2+) або завершився з помилкою
         }
 
         if (processes.Count == 0)
@@ -43,9 +33,6 @@ public static class ProcessSource
         return processes;
     }
 
-    /// <summary>
-    /// Зупиняє процес. Повертає код виходу та повідомлення програми taskkill/kill.
-    /// </summary>
     public static CommandResult Kill(int pid)
     {
         return OperatingSystem.IsWindows()
@@ -53,10 +40,6 @@ public static class ProcessSource
             : CommandRunner.Run("kill", $"-9 {pid}");
     }
 
-    /// <summary>
-    /// Чи означає помилка taskkill/kill, що процесу вже немає.
-    /// taskkill повертає код 128, якщо процес не знайдено; kill пише "No such process".
-    /// </summary>
     public static bool IsAlreadyExited(CommandResult result)
     {
         return OperatingSystem.IsWindows()
@@ -64,12 +47,6 @@ public static class ProcessSource
             : result.Error.Contains("No such process");
     }
 
-    // wmic process get ProcessId,ParentProcessId,Name
-    // Вивід - таблиця з колонками за абеткою, вирівняна пробілами:
-    //   Name                 ParentProcessId  ProcessId
-    //   System Idle Process  0                0
-    //   cmd.exe              1234             5678
-    // (/format:csv не використовуємо: на неанглійських Windows він дає помилку "Invalid XSL format")
     private static List<ProcessInfo> FromWmic()
     {
         CommandResult result = CommandRunner.Run("wmic", "process get ProcessId,ParentProcessId,Name");
@@ -80,10 +57,6 @@ public static class ProcessSource
         return ParseTable(result.Output);
     }
 
-    /// <summary>
-    /// Розбирає таблицю wmic: межі колонок визначаються за положенням назв у заголовку,
-    /// тому назви процесів з пробілами ("System Idle Process") читаються правильно.
-    /// </summary>
     private static List<ProcessInfo> ParseTable(string table)
     {
         var processes = new List<ProcessInfo>();
@@ -122,10 +95,6 @@ public static class ProcessSource
         return processes;
     }
 
-    /// <summary>
-    /// wmic інколи пише у кодуванні UTF-16: після читання між літерами лишаються нульові символи,
-    /// а на початку - позначка кодування (BOM). Прибираємо їх, щоб колонки не зсувалися.
-    /// </summary>
     private static string CleanOutput(string output)
     {
         return output.Replace("\0", "").Replace("\uFEFF", "").Replace("\uFFFD", "");
@@ -137,7 +106,6 @@ public static class ProcessSource
         return match.Success ? match.Index : -1;
     }
 
-    // Текст колонки: від її початку до початку наступної колонки (або до кінця рядка)
     private static string Cell(string line, int start, int[] allStarts)
     {
         if (start >= line.Length)
@@ -149,7 +117,6 @@ public static class ProcessSource
         return line[start..end].Trim();
     }
 
-    // PowerShell видає CSV з колонками у порядку Select-Object
     private static List<ProcessInfo> FromPowerShell()
     {
         CommandResult result = CommandRunner.Run("powershell",
@@ -162,7 +129,6 @@ public static class ProcessSource
         return ParseCsv(result.Output);
     }
 
-    // ps -e -o pid,ppid,comm  ->  "  PID  PPID COMMAND"
     private static List<ProcessInfo> FromPs()
     {
         CommandResult result = CommandRunner.Run("ps", "-e -o pid=,ppid=,comm=");
@@ -183,10 +149,6 @@ public static class ProcessSource
         return processes;
     }
 
-    /// <summary>
-    /// Розбирає CSV, знаходячи потрібні колонки за назвами в заголовку,
-    /// бо wmic і PowerShell розташовують колонки по-різному.
-    /// </summary>
     private static List<ProcessInfo> ParseCsv(string csv)
     {
         var processes = new List<ProcessInfo>();

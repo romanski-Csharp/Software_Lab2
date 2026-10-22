@@ -3,20 +3,11 @@ using System.Text.RegularExpressions;
 
 namespace MaskWords;
 
-/// <summary>
-/// Лабораторна робота №2, завдання 1, варіант 4.
-/// Читає текст зі stdin і виводить у stdout ті самі дані, але кожне слово,
-/// що містить символ '@', замінюється на "xxxxx".
-/// Параметр --keep-len зберігає довжину слова: "a@b.c" -> "xxxxx" (5 символів),
-/// "roman@gmail.com" -> "xxxxxxxxxxxxxxx" (15 символів).
-/// Слова розділені одним або кількома пробілами, пробіли зберігаються як є.
-/// </summary>
 public static class Program
 {
     private const string Mask = "xxxxx";
     private const char MaskChar = 'x';
 
-    // Слово - це послідовність символів без пробілів
     private static readonly Regex WordRegex = new("[^ ]+", RegexOptions.Compiled);
 
     public static int Main(string[] args)
@@ -35,7 +26,6 @@ public static class Program
                     PrintHelp();
                     return 0;
                 default:
-                    // Помилки пишемо в stderr, щоб вони не потрапили в результат (stdout)
                     Console.Error.WriteLine($"MaskWords: unknown argument '{arg}'. Use --help.");
                     return 2;
             }
@@ -43,8 +33,6 @@ public static class Program
 
         SetUtf8Encoding();
 
-        // Читаємо рядок за рядком: програма працює з даними будь-якого розміру
-        // і відразу передає результат далі по pipe
         string? line;
         while ((line = Console.In.ReadLine()) != null)
         {
@@ -69,7 +57,6 @@ public static class Program
 
     private static void SetUtf8Encoding()
     {
-        // Щоб кирилиця правильно проходила через pipe (у cmd ще потрібен chcp 65001)
         try
         {
             Console.InputEncoding = Encoding.UTF8;
@@ -77,7 +64,6 @@ public static class Program
         }
         catch (IOException)
         {
-            // Без консолі (наприклад, при запуску з іншої програми) кодування змінити не можна
         }
     }
 
